@@ -1,0 +1,1 @@
+module.exports={SECRET_KEY:"gie2022"}

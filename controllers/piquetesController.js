@@ -45,17 +45,20 @@ module.exports = {
         }
     },
     getZonas: async function (req, res, next) {
+        console.log("zonas")
         try {
             const documents = await piquetesModel.aggregate([
                 {
                     '$group': {
                         '_id': '$area',
-                        'area': {
+                        'value': {
                             '$first': '$area'
                         }
                     }
                 }, {
                     '$unset': '_id'
+                }, {
+                    '$sort': { 'value': 1 }
                 }
             ])
             res.json(documents)
@@ -66,17 +69,20 @@ module.exports = {
         }
     },
     getLineas: async function (req, res, next) {
+        console.log("lineas")
         try {
             const documents = await piquetesModel.aggregate([
                 {
                     '$group': {
                         '_id': '$linea',
-                        'area': {
+                        'value': {
                             '$first': '$linea'
                         }
                     }
                 }, {
                     '$unset': '_id'
+                }, {
+                    '$sort': { 'value': 1 }
                 }
             ])
             res.json(documents)
@@ -92,6 +98,14 @@ module.exports = {
                 filtroZonas(req.query.zonas),
                 filtroLineas(req.query.lineas),
                 {
+                    '$lookup': {
+                        'from': 'novedades',
+                        'localField': 'equipo',
+                        'foreignField': 'equipo',
+                        'as': 'novedades'
+                    }
+                }
+                /* {
                     '$lookup': {
                         'from': 'novedades',
                         'let': {
@@ -111,8 +125,8 @@ module.exports = {
                                     '$expr': {
                                         '$in': [
                                             '$codigo_valorac', [
-                                                'PINT', 'PINM','LA01'
-                                            //'LA01'
+                                                'PINT', 'PINM', 'LA01'
+                                                //'LA01'
                                             ]
                                         ]
                                     }
@@ -127,7 +141,7 @@ module.exports = {
                             '$ne': []
                         }
                     }
-                }
+                } */
             ])
             res.json(documents)
         } catch (e) {

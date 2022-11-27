@@ -6,6 +6,7 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var cors = require('cors')
+var bodyParser = require('body-parser');
 
 var AuthToken = require("./middlewares/authToken")
 
@@ -13,6 +14,9 @@ const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/usersRouter');
 const piquetesRouter = require('./routes/piquetesRouter');
 const novedadesRouter = require('./routes/novedadesRouter');
+const operacionesRouter = require('./routes/operacionesRouter');
+const equiposRouter = require('./routes/equiposRouter');
+const maquinasRouter = require('./routes/equipos/maquinasRouter');
 
 var app = express();
 
@@ -21,6 +25,9 @@ app.set("secretKey", "gie2022")
 
 //CORS
 app.use(cors())
+
+
+app.use(bodyParser.json({limit: '50mb'}));
 
 //Setea la ubicación de las imagenes
 app.use('/clients-images', express.static(path.join(__dirname + '/clients-images/')));
@@ -43,6 +50,9 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/piquetes/', piquetesRouter);
 app.use('/novedades/', novedadesRouter);
+app.use('/equipos/', equiposRouter);
+app.use('/maquinas/', maquinasRouter);
+app.use('/operaciones/', operacionesRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

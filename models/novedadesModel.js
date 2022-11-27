@@ -11,88 +11,70 @@ mongoose.Number.cast(v => {
 
 //creación schema
 const novedadesSchema = mongoose.Schema({
-    Orden: {
+    orden: {
       type: String,
       default: "-"
-      //required: [true, errorMessage.GENERAL.campo_obligatorio],
-      //minlength: [8, errorMessage.GENERAL.min_length],
     },
-    Ubicac_tecnica: {
+    ubicac_tecnica: {
       type: String,
       default: null,
     },
-    Punto_de_medida: {
+    fecha: {
+      type: Date,
+      default: null,
+    },
+    punto_de_medida: {
       type: String,
       default: null,
     },
-    Documento_med: {
+    documento_med: {
       type: String,
       default: null,
     },
-    Equipo: {
+    equipo: {
       type: String,
       default: null,
     },
-    Denominacion: {
+    posicion_medida: {
       type: String,
       default: null,
     },
-    Posicion_medida: {
+    denominacion: {
       type: String,
       default: null,
     },
-    Fecha: {
+    grupo_codigos: {
       type: String,
       default: null,
     },
-    Grupo_codigos: {
+    codigo_valorac: {
       type: String,
       default: null,
     },
-    Codigo_valorac: {
+    codif_txt_cod: {
       type: String,
       default: null,
     },
-    Codif_txt_cod: {
-      type: String,
-      default: null,
-    },
-    Texto: {
-      type: String,
-      default: null,
-    },
-    Valor_medido: {
+    valor_medido: {
       type: Number,
       /* default: function (){
       return(this.Valor_medido? parseFloat(this.Valor_medido?.replace(/,/g, '')):0)
       } */
-    },
-    Codigo_Interno: {
+    },    
+    unidad_caracterist: {
       type: String,
-      default: function () {
-        let codigo_interno = this.Equipo ? this.Equipo.split("-", 2)[1] : null
-        return codigo_interno;
-      },
+      /* default: function (){
+      return(this.Valor_medido? parseFloat(this.Valor_medido?.replace(/,/g, '')):0)
+      } */
     },
-    Fecha_Mes: {
-      type: Number,
-      default: function () {
-        return Number(this.Fecha.split("/")[0]);
-      },
-    },
-    Fecha_Año: {
-      type: Number,
-      default: function () {
-        return Number(this.Fecha.split("/")[2]);
-      },
-    },
-    Piquete: {
+    codigo_interno:{
       type: String,
-      default: function () {
-  
-        return (this.Equipo.includes("Piquete") ? Number(this.Equipo.split("-")[3].slice(1, 5)) : undefined);
-      },
-    },
+      default: function (){
+      return(this.equipo? this.equipo.split("-")[1]:"")
+      } 
+
+    }
+   
   });
 
 //creación model

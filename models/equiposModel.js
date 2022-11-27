@@ -8,7 +8,7 @@ const equiposSchema = mongoose.Schema({
     },
     ID: {
         type: String,
-        unique: true
+        //unique: true
     },
     denominacion: {
         type: String,
@@ -73,4 +73,4 @@ const equiposSchema = mongoose.Schema({
 })
 
 //creación model
-module.exports = mongoose.model("equipos", equiposSchema)
+module.exports = mongoose.model("equipo", equiposSchema, 'equipos')

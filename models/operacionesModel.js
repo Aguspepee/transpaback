@@ -2,70 +2,70 @@ const mongoose = require("../bin/mongodb")
 
 //creación schema
 const operacionesSchema = mongoose.Schema({
-    Ta:{
-        type: String,
-        default: ""
-    },
-    codigo: {
-        type: String,
-        default: ""
-    },
-    nombre: {
-        type: String,
-        default: ""
-    },
-    SALIDA: {
-        type: Date,
-        default: null
-    },
-    durac: {
+    IDNOV:{
         type: Number,
-        default: 0
-    },
-    Cl: {
-        type: String,
-        default: ""
-    },
-    observaciones: {
-        type: String,
-        default: ""
-    },
-    elem: {
-        type: String,
-        default: ""
-    },
-    ENTRADA: {
-        type: Date,
         default: null
-    },
-    datos_adicionales: {
-        type: String,
-        default: ""
-    },
-    ens: {
-        type: String,
-        default: ""
-    },
-    causa: {
-        type: String,
-        default: ""
-    },
-    potencia: {
-        type: String,
-        default: ""
-    },
-    sancion: {
-        type: String,
-        default: ""
-    },
-    mas: {
-        type: String,
-        default: ""
     },
     IDEQ: {
+        type: Number,
+        default: ""
+    },
+    NOMB: {
         type: String,
         default: ""
-    }
+    },
+    INT: {
+        type: Number,
+        default: null
+    },
+    FSAL: {
+        type: Date,
+        default: null
+    },
+    HSAL: {
+        type: Number,
+        default: null
+    },
+    MSAL: {
+        type: Number,
+        default: null
+    },
+    FENT: {
+        type: Date,
+        default: null
+    },
+    HENT: {
+        type: Number,
+        default: null
+    },
+    MENT: {
+        type: Number,
+        default: null
+    },
+    ENS: {
+        type: String,
+        default: "-"
+    },
+    PREDU: {
+        type: String,
+        default: "-"
+    },
+    OBSERVACIONES: {
+        type: String,
+        default: null
+    },
+    FINF: {
+        type: Date,
+        default: null
+    },
+    HINF: {
+        type: String,
+        default: ""
+    },
+    MINF: {
+        type: String,
+        default: ""
+    },
 })
 
 //creación model

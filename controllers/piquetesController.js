@@ -15,7 +15,6 @@ const filtroZonas = (zonas) => {
 }
 
 const filtroLineas = (lineas) => {
-    console.log(lineas)
     return (
         !(lineas === undefined || lineas.length == 0) ?
             {
@@ -34,9 +33,7 @@ module.exports = {
             const documents = await piquetesModel.aggregate([
                 filtroZonas(req.query.zonas),
                 filtroLineas(req.query.lineas)
-
             ])
-
             res.json(documents)
         } catch (e) {
             console.log(e)
@@ -45,7 +42,6 @@ module.exports = {
         }
     },
     getZonas: async function (req, res, next) {
-        console.log("zonas")
         try {
             const documents = await piquetesModel.aggregate([
                 {
@@ -69,9 +65,9 @@ module.exports = {
         }
     },
     getLineas: async function (req, res, next) {
-        console.log("lineas")
         try {
             const documents = await piquetesModel.aggregate([
+                filtroZonas(req.query.zonas),
                 {
                     '$group': {
                         '_id': '$linea',
@@ -100,12 +96,36 @@ module.exports = {
                 {
                     '$lookup': {
                         'from': 'novedades',
-                        'localField': 'equipo',
-                        'foreignField': 'equipo',
-                        'as': 'novedades'
+                        'let': {
+                            'equipo': '$equipo'
+                        },
+                        'pipeline': [
+                            {
+                                '$match': {
+                                    '$expr': {
+                                        '$ne': [
+                                            '$codigo_valorac', ''
+                                        ]
+                                    }
+                                }
+                            },
+                            {
+                                '$match': {
+                                    '$expr': {
+                                        '$eq': [
+                                            '$equipo', '$$equipo'
+                                        ]
+                                    }
+                                }
+                            },
+                            {
+                                '$sort': {'fecha':-1}
+                            }
+                        ],
+                        'as': 'novedades_list'
                     }
-                }
-                /* {
+                },
+                {
                     '$lookup': {
                         'from': 'novedades',
                         'let': {
@@ -115,19 +135,26 @@ module.exports = {
                             {
                                 '$match': {
                                     '$expr': {
+                                        '$ne': [
+                                            '$codigo_valorac', ''
+                                        ]
+                                    }
+                                }
+                            },
+                            {
+                                '$match': {
+                                    '$expr': {
                                         '$eq': [
                                             '$equipo', '$$equipo'
                                         ]
                                     }
                                 }
-                            }, {
+                            },
+                            {
                                 '$match': {
                                     '$expr': {
                                         '$in': [
-                                            '$codigo_valorac', [
-                                                'PINT', 'PINM', 'LA01'
-                                                //'LA01'
-                                            ]
+                                            '$codigo_valorac', req.query.codigos?.split(",")
                                         ]
                                     }
                                 }
@@ -135,13 +162,7 @@ module.exports = {
                         ],
                         'as': 'novedades'
                     }
-                }, {
-                    '$match': {
-                        'novedades': {
-                            '$ne': []
-                        }
-                    }
-                } */
+                }
             ])
             res.json(documents)
         } catch (e) {

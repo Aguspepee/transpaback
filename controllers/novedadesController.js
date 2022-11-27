@@ -6,7 +6,7 @@ const filtroZonas = (zonas) => {
         !(zonas === undefined || zonas.length == 0) ?
             {
                 '$match': {
-                    'area': {
+                    'piquete.area': {
                         '$in': zonas.split(',')
                     }
                 }
@@ -20,9 +20,21 @@ const filtroLineas = (lineas) => {
         !(lineas === undefined || lineas.length == 0) ?
             {
                 '$match': {
-                    "codigo_Interno": {
+                    "codigo_interno": {
                         '$in': lineas.split(',')
                     }
+                }
+            } : { '$match': {} }
+    )
+}
+
+const filtroReparadas = (reparadas) => {
+    console.log(reparadas)
+    return (
+        reparadas === 'false' ?
+            {
+                '$match': {
+                    "valor_medido": 0
                 }
             } : { '$match': {} }
     )
@@ -31,15 +43,52 @@ const filtroLineas = (lineas) => {
 const filtroCodigos = (codigos) => {
     console.log(codigos)
     return (
-        !(codigos === undefined || codigos.length == 0) ?
+        {
+            '$match': {
+                'codigo_valorac': {
+                    '$in': codigos?.split(',')
+                }
+            }
+        }
+    )
+}
+
+const mostrarHistorico = (historico) => {
+
+    return (
+        historico === 'false' ?
             {
-                '$match': {
+                '$group': {
+                    '_id': [
+                        '$equipo', '$codigo_valorac', '$denominacion'
+                    ],
+                    'fecha': {
+                        '$first': '$fecha'
+                    },
+                    'orden': {
+                        '$first': '$orden'
+                    },
+                    'equipo': {
+                        '$first': '$equipo'
+                    },
+                    'denominacion': {
+                        '$first': '$denominacion'
+                    },
                     'codigo_valorac': {
-                        '$in': codigos.split(',')
+                        '$first': '$codigo_valorac'
+                    },
+                    'codif_txt_cod': {
+                        '$first': '$codif_txt_cod'
+                    },
+                    'valor_medido': {
+                        '$first': '$valor_medido'
                     }
                 }
             } : { '$match': {} }
+
     )
+
+
 }
 
 module.exports = {
@@ -59,17 +108,40 @@ module.exports = {
 
         try {
             const documents = await novedadesModel.aggregate([
+
                 filtroLineas(req.query.lineas),
                 filtroCodigos(req.query.codigos),
-                 {
+                {
+                    '$sort': {
+                        'fecha': -1
+                    }
+                },
+                mostrarHistorico(req.query.historico),
+                {
                     '$lookup': {
                         'from': 'piquetes',
                         'localField': 'equipo',
                         'foreignField': 'equipo',
                         'as': 'piquete'
                     }
-                } 
-           ])
+                },
+                {
+                    '$match': {
+                        '$expr': {
+                            '$ne': [
+                                '$codigo_valorac', ""
+                            ]
+                        }
+                    }
+                },
+                filtroZonas(req.query.zonas),
+                filtroReparadas(req.query.reparadas),
+                {
+                    '$sort': {
+                        'fecha': -1
+                    }
+                },
+            ])
             res.json(documents)
         } catch (e) {
             console.log(e)
@@ -79,14 +151,20 @@ module.exports = {
     },
 
     createAll: async function (req, res, next) {
+
+        const novedades = req.body.map((novedad) => {
+            var fecha_str = novedad.fecha.split("/");
+            var fecha = new Date(+fecha_str[2], fecha_str[1] - 1, +fecha_str[0]);
+            return ({ ...novedad, fecha: fecha })
+        })
         try {
-          const document = await lineasNovedadesModel.create(req.body);
-          console.log("se creo", document);
-          res.json(document);
+            const document = await novedadesModel.create(novedades);
+            console.log(document)
+            res.json(document);
         } catch (e) {
-          console.log(e);
-          e.status = 400;
-          next(e);
+            console.log(e);
+            e.status = 400;
+            next(e);
         }
-      },
+    },
 }

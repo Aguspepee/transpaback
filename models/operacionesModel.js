@@ -7,7 +7,7 @@ const operacionesSchema = mongoose.Schema({
         default: null
     },
     IDEQ: {
-        type: Number,
+        type: String,
         default: ""
     },
     NOMB: {

@@ -15,6 +15,10 @@ const usersRouter = require('./routes/usersRouter');
 const piquetesRouter = require('./routes/piquetesRouter');
 const novedadesRouter = require('./routes/novedadesRouter');
 const operacionesRouter = require('./routes/operacionesRouter');
+const indisponibilidadesRouter = require('./routes/indisponibilidadesRouter');
+const lineasRouter = require('./routes/lineasRouter');
+const reportesRouter = require('./routes/reportesRouter');
+const puntosRouter = require('./routes/puntosRouter');
 const equiposRouter = require('./routes/equiposRouter');
 const maquinasRouter = require('./routes/equipos/maquinasRouter');
 
@@ -53,6 +57,10 @@ app.use('/novedades/', novedadesRouter);
 app.use('/equipos/', equiposRouter);
 app.use('/maquinas/', maquinasRouter);
 app.use('/operaciones/', operacionesRouter);
+app.use('/indisponibilidades/', indisponibilidadesRouter);
+app.use('/lineas/', lineasRouter);
+app.use('/reportes/', reportesRouter);
+app.use('/puntos/', puntosRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

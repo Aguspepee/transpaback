@@ -1,72 +1,28 @@
 const mongoose = require("../../bin/mongodb")
 
+
+const historialSchema = mongoose.Schema({
+    ubicacion_tecnica: {
+        type: String,
+        default: ""
+    },
+    fecha_inicio: {
+        type: Date,
+        default: null
+    },
+    fecha_fin: {
+        type: Date,
+        default: null
+    },
+    condicion: {
+        type: String,
+        default: ""
+    },
+
+}, { _id : false })
+
 //creación schema
 const maquinasSchema = mongoose.Schema({
-    /*     ubicación_tecnica_sap:{
-            type: String,
-            default: ""
-        },
-        
-        denominacion: {
-            type: String,
-            default: ""
-        },
-        status_sistema: {
-            type: String,
-            default: ""
-        },
-        zona: {
-            type: String,
-            default: ""
-        },
-        campo_clasificacion: {
-            type: String,
-            default: ""
-        },
-        pto_tbjo_resp: {
-            type: String,
-            default: ""
-        },
-        grupo_planif: {
-            type: String,
-            default: ""
-        },
-        creado_el: {
-            type: Date,
-            default: null
-        },
-        fecha_adquis: {
-            type: String,
-            default: ""
-        },
-        fabricante: {
-            type: String,
-            default: ""
-        },
-        denomin_tipo: {
-            type: String,
-            default: ""
-        },
-        n_pieza_fabric: {
-            type: String,
-            default: ""
-        },
-        fabr_n_serie: {
-            type: String,
-            default: ""
-        },
-        centro_coste: {
-            type: String,
-            default: ""
-        },
-        elemento_pep: {
-            type: String,
-            default: ""
-        },
-        emplazamiento: {
-            type: String,
-            default: ""
-        } */
     ID: {
         type: String,
         unique: true
@@ -103,6 +59,10 @@ const maquinasSchema = mongoose.Schema({
         type: String,
         default: ""
     },
+    potencia_1: {
+        type: Number,
+        default: null
+    },
     num_fabrica: {
         type: String,
         default: ""
@@ -112,8 +72,8 @@ const maquinasSchema = mongoose.Schema({
         default: null
     },
     fecha_puesta_en_marcha: {
-        type: Date,
-        default: null
+        type: String,
+        default: ""
     },
     grupo_conexion: {
         type: String,
@@ -227,6 +187,11 @@ const maquinasSchema = mongoose.Schema({
         type: String,
         default: ""
     },
+    IDEQ: {
+        type: String,
+        unique: true
+    },
+    historial: [historialSchema]
 })
 
 //creación model

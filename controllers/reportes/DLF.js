@@ -102,8 +102,8 @@ module.exports = {
                                             args: [
                                                 "$SALIDA",
                                                 "$ENTRADA",
-                                                new Date("2016-01-01T00:00:00.000+00:00"),
-                                                new Date("2017-01-01T00:00:00.000+00:00"),
+                                                fecha_inicio,
+                                                fecha_fin,
                                             ],
                                             lang: "js",
                                         },
@@ -152,8 +152,8 @@ module.exports = {
                                 args: [
                                     "$fecha_inicio",
                                     "$fecha_fin",
-                                    new Date("2016-01-01T00:00:00.000+00:00"),
-                                    new Date("2017-01-01T00:00:00.000+00:00"),
+                                    fecha_inicio,
+                                    fecha_fin,
                                 ],
                                 lang: "js",
                             },
@@ -202,8 +202,8 @@ module.exports = {
                                 args: [
                                     "$fecha_inicio",
                                     "$fecha_fin",
-                                    new Date("2016-01-01T00:00:00.000+00:00"),
-                                    new Date("2017-01-01T00:00:00.000+00:00"),
+                                    fecha_inicio,
+                                    fecha_fin,
                                 ],
                                 lang: "js",
                             },
@@ -281,7 +281,7 @@ module.exports = {
                                         100,
                                     ],
                                 },
-                                3,
+                                4,
                             ],
                         },
                         DLF_B: {
@@ -299,7 +299,7 @@ module.exports = {
                                         100,
                                     ],
                                 },
-                                3,
+                                4,
                             ],
                         },
                     },
@@ -315,5 +315,5 @@ module.exports = {
         }
 
     },
-   
+
 }

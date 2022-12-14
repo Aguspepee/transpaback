@@ -23,7 +23,6 @@ module.exports = {
 
         const hour = time[0] || 0
         const minutes = time[1] || 0
-console.log(value)
 
         return (new Date(year, month, day, hour, minutes, 0))
     }

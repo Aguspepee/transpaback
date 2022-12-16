@@ -1,7 +1,7 @@
-const { DLF_list, DLF_value } = require("./reportes/DLF")
-const { DLP_list, DLP_value } = require("./reportes/DLP")
-const { DTN_list, DTN_value } = require("./reportes/DTN")
-const { DCF_list, DCF_value } = require("./reportes/DCF")
+const { DLF_detail_list, DLF_value } = require("./reportes/DLF")
+const { DLP_detail_list, DLP_value } = require("./reportes/DLP")
+const { DTN_detail_list, DTN_value } = require("./reportes/DTN")
+const { DCF_detail_list, DCF_value } = require("./reportes/DCF")
 
 const getInicioFin = ({ month, year }) => {
     //Se determina la fecha de inicio del mes y la fecha de fin del mes
@@ -208,11 +208,11 @@ module.exports = {
 
     //--------------DETAIL TABLE--------------//
     DLFDetailTable: async function (req, res, next) {
-
+        var sort = {};
+        sort[req.query.orderBy.replace("[", ".").replace("]", "")] = req.query.order === 'asc' ? -1 : 1;
         const { inicio_mes, fin_mes } = getInicioFin({ month: req.query.month || 5, year: req.query.year || 2019 })
-
         try {
-            const documents = await DLF_list({ fecha_inicio: inicio_mes, fecha_fin: fin_mes })
+            const documents = await DLF_detail_list({ fecha_inicio: inicio_mes, fecha_fin: fin_mes, sort:sort })
             res.json(documents)
         } catch (e) {
             console.log(e)
@@ -221,11 +221,11 @@ module.exports = {
         }
     },
     DLPDetailTable: async function (req, res, next) {
-
+        var sort = {};
+        sort[req.query.orderBy.replace("[", ".").replace("]", "")] = req.query.order === 'asc' ? -1 : 1;
         const { inicio_mes, fin_mes } = getInicioFin({ month: req.query.month || 5, year: req.query.year || 2019 })
-
         try {
-            const documents = await DLP_list({ fecha_inicio: inicio_mes, fecha_fin: fin_mes })
+            const documents = await DLP_detail_list({ fecha_inicio: inicio_mes, fecha_fin: fin_mes, sort:sort })
             res.json(documents)
         } catch (e) {
             console.log(e)
@@ -234,11 +234,11 @@ module.exports = {
         }
     },
     DTNDetailTable: async function (req, res, next) {
-
+        var sort = {};
+        sort[req.query.orderBy.replace("[", ".").replace("]", "")] = req.query.order === 'asc' ? -1 : 1;
         const { inicio_mes, fin_mes } = getInicioFin({ month: req.query.month || 5, year: req.query.year || 2019 })
-
         try {
-            const documents = await DTN_list({ fecha_inicio: inicio_mes, fecha_fin: fin_mes })
+            const documents = await DTN_detail_list({ fecha_inicio: inicio_mes, fecha_fin: fin_mes, sort:sort })
             res.json(documents)
         } catch (e) {
             console.log(e)
@@ -247,11 +247,11 @@ module.exports = {
         }
     },
     DCFDetailTable: async function (req, res, next) {
-
+        var sort = {};
+        sort[req.query.orderBy.replace("[", ".").replace("]", "")] = req.query.order === 'asc' ? -1 : 1;
         const { inicio_mes, fin_mes } = getInicioFin({ month: req.query.month || 5, year: req.query.year || 2019 })
-
         try {
-            const documents = await DCF_list({ fecha_inicio: inicio_mes, fecha_fin: fin_mes })
+            const documents = await DCF_detail_list({ fecha_inicio: inicio_mes, fecha_fin: fin_mes, sort:sort })
             res.json(documents)
         } catch (e) {
             console.log(e)

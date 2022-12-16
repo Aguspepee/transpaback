@@ -200,9 +200,23 @@ const DTN_filters = (fecha_inicio, fecha_fin) => {
   {
     $project: {
       _id: 0,
+      ID: 1,
       ubicacion_tecnica: 1,
       potencia_1: 1,
-      indisponibilidades: 1,
+      IDEQ: 1,
+      tension: 1,
+      fecha_inicio: 1,
+      fecha_fin: 1,
+      atendido_por: 1,
+      indisponibilidades: {
+        $filter: {
+          input: "$indisponibilidades",
+          as: "indisponibilidad",
+          cond: {
+            $gt: ["$$indisponibilidad.duracion_ano_movil", 0],
+          },
+        },
+      },
       horas_totales_ano_movil: 1,
       horas_indisponibles_ano_movil: {
         $sum: "$indisponibilidades.duracion_ano_movil",
@@ -307,13 +321,22 @@ module.exports = {
     }
 
   },
-  DTN_list: async function ({ fecha_inicio, fecha_fin }) {
+  DTN_detail_list: async function ({ fecha_inicio, fecha_fin, sort }) {
     try {
       const documents = await equiposModel.aggregate(
         DTN_filters(fecha_inicio, fecha_fin).concat([
-          
+          {
+            $match: {
+              horas_totales_ano_movil: {
+                $gt: 0
+              },
+            },
+          },
+          {
+            "$sort": sort
+          },
         ]))
-      return (documents[0].value)
+      return (documents)
 
     } catch (e) {
       console.log(e)

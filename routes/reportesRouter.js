@@ -5,6 +5,7 @@ const reportesController = require("../controllers/reportesController.js")
 
 /* GET */
 
+//------DIMA-----//
 //VALUES
 router.get('/DIMA/DIMA-value', reportesController.DIMAValue);
 router.get('/DIMA/DLF-value', reportesController.DLFValue);
@@ -20,10 +21,11 @@ router.get('/DIMA/DTN-array', reportesController.DTNArray);
 router.get('/DIMA/DCF-array', reportesController.DCFArray);
 
 //DATAIL TABLE
-router.get('/DIMA/DLF-table', reportesController.DLFDetailTable);
-router.get('/DIMA/DLP-table', reportesController.DLPDetailTable);
-router.get('/DIMA/DTN-table', reportesController.DTNDetailTable);
-router.get('/DIMA/DCF-table', reportesController.DCFDetailTable);
+router.get('/DIMA/DLF-detail-table', reportesController.DLFDetailTable);
+router.get('/DIMA/DLP-detail-table', reportesController.DLPDetailTable);
+router.get('/DIMA/DTN-detail-table', reportesController.DTNDetailTable);
+router.get('/DIMA/DCF-detail-table', reportesController.DCFDetailTable);
+
 
 
 module.exports = router;

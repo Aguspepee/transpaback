@@ -152,11 +152,18 @@ const DLP_filters = (fecha_inicio, fecha_fin) => {
         codigo: 1,
         propietario_2: 1,
         longitud_oficial: 1,
-        indisponibilidades: 1,
+        indisponibilidades: {$filter: {
+          input: '$indisponibilidades',
+          as: 'indisponibilidad',
+          cond: {$gt: ['$$indisponibilidad.duracion_ano_movil', 0]}
+      }},
         horas_totales_ano_movil: 1,
+        fecha_inicio: 1,
+        fecha_fin: 1,
+        IDEQ: 1,
         horas_indisponibles_ano_movil: {
           $sum: "$indisponibilidades.duracion_ano_movil",
-        },
+        }
       },
     },
     {
@@ -236,32 +243,27 @@ module.exports = {
 
   },
 
-  DLP_list: async function ({ fecha_inicio, fecha_fin }) {
+  DLP_detail_list: async function ({ fecha_inicio, fecha_fin,sort }) {
     try {
-      const documents = await lineasModel.aggregate(
-
-        DLP_filters(fecha_inicio, fecha_fin).concat([
-          {
-            $match: {
-              horas_totales_ano_movil: {
-                $gt: 0
-              },
-            },
-          },
-          {
-            $sort: {
-              codigo: 1,
-            },
-          },
-        ])
-      )
-      return (documents[0].value)
-
-    } catch (e) {
-      console.log(e)
-      e.status = 400
-    }
-
+            const documents = await lineasModel.aggregate(
+                DLP_filters(fecha_inicio, fecha_fin).concat([
+                    {
+                        $match: {
+                            horas_totales_ano_movil: {
+                                $gt: 0
+                            },
+                        },
+                    },
+                    {
+                        "$sort": sort
+                    },
+                ])
+            )
+            return (documents)
+        } catch (e) {
+            console.log(e)
+            e.status = 400
+        }
   },
 
 }

@@ -163,8 +163,15 @@ const DLF_filters = (fecha_inicio, fecha_fin) => {
             codigo: 1,
             propietario_2: 1,
             longitud_oficial: 1,
-            indisponibilidades: 1,
+            indisponibilidades: {$filter: {
+                input: '$indisponibilidades',
+                as: 'indisponibilidad',
+                cond: {$gt: ['$$indisponibilidad.duracion_ano_movil', 0]}
+            }},
             horas_totales_ano_movil: 1,
+            fecha_inicio: 1,
+            fecha_fin: 1,
+            IDEQ: 1,
             horas_indisponibles_ano_movil: {
                 $sum: "$indisponibilidades.duracion_ano_movil",
             }
@@ -247,11 +254,9 @@ module.exports = {
 
 
 
-    DLF_list: async function ({ fecha_inicio, fecha_fin }) {
+    DLF_detail_list: async function ({ fecha_inicio, fecha_fin, sort }) {       
         try {
-
-            //DLF - Disponibilidad media anual movil de salidad de líneas forzadas
-            const documents = await lineasModel.aggregate(
+        const documents = await lineasModel.aggregate(
                 DLF_filters(fecha_inicio, fecha_fin).concat([
                     {
                         $match: {
@@ -261,9 +266,7 @@ module.exports = {
                         },
                     },
                     {
-                        $sort: {
-                            codigo: 1,
-                        },
+                        "$sort": sort
                     },
                 ])
             )

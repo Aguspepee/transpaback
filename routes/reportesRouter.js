@@ -19,6 +19,7 @@ router.get('/DIMA/DLF-array', reportesController.DLFArray);
 router.get('/DIMA/DLP-array', reportesController.DLPArray);
 router.get('/DIMA/DTN-array', reportesController.DTNArray);
 router.get('/DIMA/DCF-array', reportesController.DCFArray);
+router.get('/DIMA/VPM-array', reportesController.VMPArray);
 
 //DATAIL TABLE
 router.get('/DIMA/DLF-detail-table', reportesController.DLFDetailTable);

@@ -2,6 +2,50 @@ const mongoose = require("../bin/mongodb")
 const errorMessage = require("../util/errorMessage")
 const bcrypt = require("bcrypt")
 
+const columnsShema = mongoose.Schema({
+    id: {
+        type: String,
+        required: [true, errorMessage.GENERAL.campo_obligatorio],
+    },
+    numeric: {
+        type: Boolean,
+        default: false
+    },
+    disablePadding: {
+        type: Boolean,
+        default: true
+    },
+    label: {
+        type: String,
+        required: [true, errorMessage.GENERAL.campo_obligatorio],
+    },
+    width: {
+        type: Number,
+        default: 200
+    },
+    show: {
+        type: Boolean,
+        enum: [true, false],
+        default: true
+    },
+    placeHolder: {
+        type: String,
+        required: [true, errorMessage.GENERAL.campo_obligatorio],
+    },
+    type: {
+        type: String,
+        required: [true, errorMessage.GENERAL.campo_obligatorio],
+    },
+    search: {
+        type: String,
+        default: null,
+    },
+    disable: {
+        type: Boolean,
+        default: false,
+    },
+})
+
 //USERS schema
 const usersShema = mongoose.Schema({
     nombre: {
@@ -65,7 +109,8 @@ const usersShema = mongoose.Schema({
     search:{
         type: mongoose.Schema.Types.Mixed,
         default:{}
-    }
+    },
+    indisponibilidadesColumns: [columnsShema],
 })
 //creación model
 usersShema.pre("save", function (next) {

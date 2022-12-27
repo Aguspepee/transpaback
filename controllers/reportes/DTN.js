@@ -59,6 +59,7 @@ const DTN_filters = (fecha_inicio, fecha_fin) => {
         ut: "$ubicacion_tecnica",
         fecha_inicio: "$fecha_inicio",
         fecha_fin: "$fecha_fin",
+        potencia: "$potencia_1"
       },
       pipeline: [
         {
@@ -74,8 +75,11 @@ const DTN_filters = (fecha_inicio, fecha_fin) => {
           $match: {
             $expr: {
               $and: [
-                {
+/*                 {
                   $gt: ["$ENS_value", 0],
+                }, */
+                {
+                  $gt: ["$Energ", 0],
                 },
                 {
                   $gt: ["$Cl", 0],
@@ -133,15 +137,19 @@ const DTN_filters = (fecha_inicio, fecha_fin) => {
           },
         },
         {
+          $match: {
+            $expr: {
+              $gt: ["$duracion_ano_movil", 0],
+            }
+          }
+        },
+        {
           $addFields: {
             ENS_ponderada: {
               $multiply: [
-                "$ENS_value",
+                "$Energ",
                 {
-                  $divide: [
-                    "$duracion_ano_movil",
-                    "$Durac",
-                  ],
+                  $divide: ["$duracion_ano_movil", "$Durac"],
                 },
               ],
             },
@@ -234,15 +242,7 @@ const DTN_filters = (fecha_inicio, fecha_fin) => {
           "$potencia_1",
         ],
       },
-      hxs: {
-        $multiply: [
-          "$horas_indisponibles_ano_movil",
-          "$potencia_1",
-        ],
-      },
-      hxs_ens: {
-        $multiply: ["$ENS_total_ano_movil", "$potencia_1"],
-      },
+      hxs:"$ENS_total_ano_movil"
     },
   },
   {
@@ -279,7 +279,7 @@ module.exports = {
                 $sum: "$HxS",
               },
               hxs: {
-                $sum: "$hxs_ens",
+                $sum: "$hxs",
               },
             },
           },

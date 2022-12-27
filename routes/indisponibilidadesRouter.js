@@ -5,6 +5,7 @@ const indisponibilidadesController = require("../controllers/indisponibilidadesC
 
 /* GET */
 router.get('/', indisponibilidadesController.getAll);
+router.get('/table/', indisponibilidadesController.getTable);
 router.post('/',indisponibilidadesController.createAll);
 
 module.exports = router;

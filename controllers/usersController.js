@@ -2,9 +2,7 @@ const usersModel = require("../models/usersModel");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const CONFIG = require("../config/config");
-const parteColumns = require("../util/columns/partes");
-const remitoColumns = require("../util/columns/remitos");
-const certificadoColumns = require("../util/columns/certificados");
+const indisponibilidadesColumns = require("../util/columns/indisponibilidades");
 
 module.exports = {
     getAll: async function (req, res, next) {
@@ -154,9 +152,7 @@ module.exports = {
                 numero_orden: req.body.numero_orden,
                 active: req.body.active,
                 deleted: req.body.deleted,
-                parteColumns: req.body.parteColumns,
-                remitoColumns: req.body.remitoColumns,
-                certificadoColumns: req.body.certificadoColumns,
+                indisponibilidadesColumns: req.body.indisponibilidadesColumns,
                 password: req.body.password ? bcrypt.hashSync(req.body.password, 10) : undefined,
                 search: req.body.search,
             }
@@ -175,9 +171,7 @@ module.exports = {
         //console.log(req.params.id)
         try {
             const user = {
-                parteColumns: parteColumns.parteColumns,
-                remitoColumns: remitoColumns.remitoColumns,
-                certificadoColumns: certificadoColumns.certificadoColumns,
+                indisponibilidadesColumns: indisponibilidadesColumns.indisponibilidadesColumns,
                 delete_permanent: false,
                 search: {},
             }

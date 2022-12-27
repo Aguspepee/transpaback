@@ -206,13 +206,63 @@ module.exports = {
         }
     },
 
+    VMPArray: async function (req, res, next) {
+        //Constantes del DIMA
+        const a = 0.50
+        const b = 0.05
+        const c = 0.40
+        const d = 0.05
+
+        const dates = dateArray(new Date(req.query.start), new Date(req.query.end))
+
+        try {
+            const data = await Promise.all(
+                dates.map(async (date) => {
+                    const { inicio_mes, fin_mes } = getInicioFin({ month: date.month || 5, year: date.year || 2019 })
+                    const DLF = await DLF_value({ fecha_inicio: inicio_mes, fecha_fin: fin_mes })
+                    const DLP = await DLP_value({ fecha_inicio: inicio_mes, fecha_fin: fin_mes })
+                    const DTN = await DTN_value({ fecha_inicio: inicio_mes, fecha_fin: fin_mes })
+                    const DCF = await DCF_value({ fecha_inicio: inicio_mes, fecha_fin: fin_mes })
+                    const DIMA_value = parseFloat((a * DLF + b * DLP + c * DTN + d * DCF))
+                    return { date: `${date.month}/${date.year}`, data: DIMA_value }
+                })
+
+
+
+            )
+
+            //Se calcula el VMP (Valor Promedio Móvil) para cada mes
+
+            const VMP = data.map((x, index) => {
+                //Suma los últimos 12 elementos
+                let sum = 0
+                let array = []
+
+                for (let i = index; i > index - 12; i--) {
+                    if (data[i]) {
+                        sum = sum + data[i].data
+                        array.push(data[i].data)
+                    }
+                }
+                let promedio = sum/array.length
+
+                return { data: promedio, date: x.date,  }
+            });
+            res.json(VMP)
+        } catch (e) {
+            console.log(e)
+            e.status = 400
+            next(e)
+        }
+    },
+
     //--------------DETAIL TABLE--------------//
     DLFDetailTable: async function (req, res, next) {
         var sort = {};
         sort[req.query.orderBy.replace("[", ".").replace("]", "")] = req.query.order === 'asc' ? -1 : 1;
         const { inicio_mes, fin_mes } = getInicioFin({ month: req.query.month || 5, year: req.query.year || 2019 })
         try {
-            const documents = await DLF_detail_list({ fecha_inicio: inicio_mes, fecha_fin: fin_mes, sort:sort })
+            const documents = await DLF_detail_list({ fecha_inicio: inicio_mes, fecha_fin: fin_mes, sort: sort })
             res.json(documents)
         } catch (e) {
             console.log(e)
@@ -220,12 +270,13 @@ module.exports = {
             next(e)
         }
     },
+
     DLPDetailTable: async function (req, res, next) {
         var sort = {};
         sort[req.query.orderBy.replace("[", ".").replace("]", "")] = req.query.order === 'asc' ? -1 : 1;
         const { inicio_mes, fin_mes } = getInicioFin({ month: req.query.month || 5, year: req.query.year || 2019 })
         try {
-            const documents = await DLP_detail_list({ fecha_inicio: inicio_mes, fecha_fin: fin_mes, sort:sort })
+            const documents = await DLP_detail_list({ fecha_inicio: inicio_mes, fecha_fin: fin_mes, sort: sort })
             res.json(documents)
         } catch (e) {
             console.log(e)
@@ -233,12 +284,13 @@ module.exports = {
             next(e)
         }
     },
+
     DTNDetailTable: async function (req, res, next) {
         var sort = {};
         sort[req.query.orderBy.replace("[", ".").replace("]", "")] = req.query.order === 'asc' ? -1 : 1;
         const { inicio_mes, fin_mes } = getInicioFin({ month: req.query.month || 5, year: req.query.year || 2019 })
         try {
-            const documents = await DTN_detail_list({ fecha_inicio: inicio_mes, fecha_fin: fin_mes, sort:sort })
+            const documents = await DTN_detail_list({ fecha_inicio: inicio_mes, fecha_fin: fin_mes, sort: sort })
             res.json(documents)
         } catch (e) {
             console.log(e)
@@ -246,12 +298,13 @@ module.exports = {
             next(e)
         }
     },
+
     DCFDetailTable: async function (req, res, next) {
         var sort = {};
         sort[req.query.orderBy.replace("[", ".").replace("]", "")] = req.query.order === 'asc' ? -1 : 1;
         const { inicio_mes, fin_mes } = getInicioFin({ month: req.query.month || 5, year: req.query.year || 2019 })
         try {
-            const documents = await DCF_detail_list({ fecha_inicio: inicio_mes, fecha_fin: fin_mes, sort:sort })
+            const documents = await DCF_detail_list({ fecha_inicio: inicio_mes, fecha_fin: fin_mes, sort: sort })
             res.json(documents)
         } catch (e) {
             console.log(e)

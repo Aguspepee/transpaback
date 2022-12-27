@@ -1,4 +1,5 @@
 const mongoose = require("../bin/mongodb")
+var aggregatePaginate = require("mongoose-aggregate-paginate-v2");
 
 //creación schema
 const indisponibilidadesSchema = mongoose.Schema({
@@ -76,5 +77,6 @@ const indisponibilidadesSchema = mongoose.Schema({
     },
 })
 
+indisponibilidadesSchema.plugin(aggregatePaginate);
 //creación model
 module.exports = mongoose.model("indisponibilidades", indisponibilidadesSchema)

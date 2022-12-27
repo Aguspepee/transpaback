@@ -1,21 +1,21 @@
 module.exports = {
-    certificadoColumns: [
+    indisponibilidadesColumns: [
         {
-            "id": "certificado_numero",
+            "id": "Ta",
             "numeric": false,
-            "disablePadding": true,
-            "label": "Certificado",
+            "disablePadding": false,
+            "label": "Ta",
             "width": 10,
             "show": true,
             "placeHolder": "",
             "type": "text",//text, number, date, select, none
             "search": null
-        }, 
+        },
         {
-            "id": "contrato[0].nombre",
+            "id": "Codi",
             "numeric": false,
             "disablePadding": false,
-            "label": "Contrato",
+            "label": "Codi",
             "width": 160,
             "show": true,
             "placeHolder": "-",
@@ -23,10 +23,10 @@ module.exports = {
             "search":null
         },
         {
-            "id": "operador[0].nombre",
+            "id": "OBSERVACIONES",
             "numeric": false,
-            "disablePadding": true,
-            "label": "operador",
+            "disablePadding": false,
+            "label": "OBSERVACIONES",
             "width": 10,
             "show": true,
             "placeHolder": "#",
@@ -34,60 +34,71 @@ module.exports = {
             "search": null
         },
         {
-            "id": "planta",
+            "id": "IDEQ","disablePadding": false,
             "numeric": false,
-            "disablePadding": true,
-            "label": "Planta",
-            "width": 10,
-            "show": true,
-            "placeHolder": "#",
-            "type": "text",//text, number, date, select, none
-            "search": null
-        },
-        {
-            "id": "certificante",
-            "numeric": false,
-            "disablePadding": true,
-            "label": "Certificante",
-            "width": 200,
+            "disablePadding": false,
+            "label": "IDEQ",
+            "width": 20,
             "show": false,
             "placeHolder": "-",
             "type": "text",//text, number, date, select, none
             "search": null
         },
         {
-            "id": "certificado_realizado_fecha",
+            "id": "NOMBRE",
             "numeric": false,
-            "disablePadding": true,
-            "label": "Fecha",
-            "width": 190,
-            "show": true,
-            "placeHolder": "#",
-            "type": "date",//text, number, date, select, none
-            "search": null
-        },
-        {
-            "id": "certificado_finalizado",
-            "numeric": false,
-            "disablePadding": true,
-            "label": "Certificado Finalizado",
+            "disablePadding": false,
+            "label": "Nombre",
             "width": 10,
             "show": true,
             "placeHolder": "#",
-            "type": "select",//text, number, date, select, none
+            "type": "text",//text, number, date, select, none
             "search": null
         },
         {
-            "id": "certificado_finalizado_fecha",
+            "id": "SALIDA",
             "numeric": false,
-            "disablePadding": true,
-            "label": "Certificado Finalizado Fecha",
+            "disablePadding": false,
+            "label": "SALIDA",
             "width": 190,
             "show": true,
             "placeHolder": "#",
             "type": "date",//text, number, date, select, none
             "search": null
-        },   
+        },
+        {
+            "id": "ENTRADA",
+            "numeric": false,
+            "disablePadding": false,
+            "label": "ENTRADA",
+            "width": 190,
+            "show": true,
+            "placeHolder": "#",
+            "type": "date",//text, number, date, select, none
+            "search": null
+        },
+        {
+            "id": "Energ",
+            "numeric": false,
+            "disablePadding": false,
+            "label": "Energía",
+            "width": 60,
+            "show": true,
+            "placeHolder": "#",
+            "type": "text",//text, number, date, select, none
+            "search": null
+        },
+        {
+            "id": "ENS_value",
+            "numeric": false,
+            "disablePadding": false,
+            "label": "ENS Valor",
+            "width": 190,
+            "show": false,
+            "placeHolder": "#",
+            "type": "text",//text, number, date, select, none
+            "search": null
+        },
     ]
 }
 

@@ -6,7 +6,6 @@ const app = express();
 app.use(express.json());
 
 mongoose.connect(
-  //"mongodb://localhost/gieback",  //DESARROLLO
   "mongodb://0.0.0.0:27017/transpa",  //PRODUCCIÓN
   //process.env.MONGODB_URI,
   {

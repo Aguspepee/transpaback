@@ -95,6 +95,22 @@ const DLP_filters = (fecha_inicio, fecha_fin) => {
               },
             },
           },
+          {
+            '$lookup': {
+              'from': 'clases',
+              'localField': 'Cl',
+              'foreignField': 'codigo',
+              'as': 'clase_detalle'
+            }
+          },
+          {
+            '$lookup': {
+              'from': 'causas',
+              'localField': 'Causa',
+              'foreignField': 'codigo',
+              'as': 'causa_detalle'
+            }
+          }
         ],
         as: "indisponibilidades",
       },
@@ -152,11 +168,13 @@ const DLP_filters = (fecha_inicio, fecha_fin) => {
         codigo: 1,
         propietario_2: 1,
         longitud_oficial: 1,
-        indisponibilidades: {$filter: {
-          input: '$indisponibilidades',
-          as: 'indisponibilidad',
-          cond: {$gt: ['$$indisponibilidad.duracion_ano_movil', 0]}
-      }},
+        indisponibilidades: {
+          $filter: {
+            input: '$indisponibilidades',
+            as: 'indisponibilidad',
+            cond: { $gt: ['$$indisponibilidad.duracion_ano_movil', 0] }
+          }
+        },
         horas_totales_ano_movil: 1,
         fecha_inicio: 1,
         fecha_fin: 1,
@@ -182,6 +200,7 @@ const DLP_filters = (fecha_inicio, fecha_fin) => {
         },
       },
     },
+
   ])
 }
 
@@ -243,27 +262,27 @@ module.exports = {
 
   },
 
-  DLP_detail_list: async function ({ fecha_inicio, fecha_fin,sort }) {
+  DLP_detail_list: async function ({ fecha_inicio, fecha_fin, sort }) {
     try {
-            const documents = await lineasModel.aggregate(
-                DLP_filters(fecha_inicio, fecha_fin).concat([
-                    {
-                        $match: {
-                            horas_totales_ano_movil: {
-                                $gt: 0
-                            },
-                        },
-                    },
-                    {
-                        "$sort": sort
-                    },
-                ])
-            )
-            return (documents)
-        } catch (e) {
-            console.log(e)
-            e.status = 400
-        }
+      const documents = await lineasModel.aggregate(
+        DLP_filters(fecha_inicio, fecha_fin).concat([
+          {
+            $match: {
+              horas_totales_ano_movil: {
+                $gt: 0
+              },
+            },
+          },
+          {
+            "$sort": sort
+          },
+        ])
+      )
+      return (documents)
+    } catch (e) {
+      console.log(e)
+      e.status = 400
+    }
   },
 
 }

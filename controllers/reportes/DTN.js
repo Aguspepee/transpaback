@@ -155,6 +155,14 @@ const DTN_filters = (fecha_inicio, fecha_fin) => {
             },
           },
         },
+        {
+          '$lookup': {
+              'from': 'clases', 
+              'localField': 'Cl', 
+              'foreignField': 'codigo', 
+              'as': 'clase_detalle'
+          }
+      },
       ],
       as: "indisponibilidades",
     },

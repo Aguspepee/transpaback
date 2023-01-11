@@ -111,6 +111,22 @@ const DCF_filters = (fecha_inicio, fecha_fin) => {
               },
             },
           },
+          {
+            '$lookup': {
+              'from': 'clases',
+              'localField': 'Cl',
+              'foreignField': 'codigo',
+              'as': 'clase_detalle'
+            }
+          },
+          {
+            '$lookup': {
+              'from': 'causas',
+              'localField': 'Causa',
+              'foreignField': 'codigo',
+              'as': 'causa_detalle'
+            }
+          }
         ],
         as: "indisponibilidades",
       },
@@ -168,7 +184,7 @@ const DCF_filters = (fecha_inicio, fecha_fin) => {
         numero: 1,
         IDEQ: 1,
         tension: 1,
-        usuario:1,
+        usuario: 1,
         longitud_oficial: 1,
         indisponibilidades: {
           $filter: {
@@ -267,15 +283,15 @@ module.exports = {
 
         DCF_filters(fecha_inicio, fecha_fin).concat([
           {
-                        $match: {
-                            horas_totales_ano_movil: {
-                                $gt: 0
-                            },
-                        },
-                    },
-                    {
-                        "$sort": sort
-                    },
+            $match: {
+              horas_totales_ano_movil: {
+                $gt: 0
+              },
+            },
+          },
+          {
+            "$sort": sort
+          },
 
         ])
       )

@@ -5,10 +5,10 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-var cors = require('cors')
+var cors = require('cors');
 var bodyParser = require('body-parser');
 
-var AuthToken = require("./middlewares/authToken")
+var AuthToken = require("./middlewares/authToken");
 
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/usersRouter');

@@ -106,6 +106,22 @@ const DLF_filters = (fecha_inicio, fecha_fin) => {
                         },
                     },
                 },
+                {
+                    '$lookup': {
+                      'from': 'clases',
+                      'localField': 'Cl',
+                      'foreignField': 'codigo',
+                      'as': 'clase_detalle'
+                    }
+                  },
+                  {
+                    '$lookup': {
+                      'from': 'causas',
+                      'localField': 'Causa',
+                      'foreignField': 'codigo',
+                      'as': 'causa_detalle'
+                    }
+                  }
             ],
             as: "indisponibilidades",
         },

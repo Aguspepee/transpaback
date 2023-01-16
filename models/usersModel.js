@@ -30,7 +30,7 @@ const columnsShema = mongoose.Schema({
     },
     placeHolder: {
         type: String,
-        required: [true, errorMessage.GENERAL.campo_obligatorio],
+        default: "-"
     },
     type: {
         type: String,

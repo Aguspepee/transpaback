@@ -2,27 +2,14 @@ const puntosModel = require("../../models/puntosModel")
 
 const DCF_filters = (fecha_inicio, fecha_fin) => {
 
-  return ([
+  return (
+    [
     {
       $match: {
-        IDEQ: {
-          $ne: "",
-        },
-      },
-    },
-    {
-      $match: {
-        remunera: {
-          $eq: "SI",
-        },
-      },
-    },
-    {
-      $match: {
-        alta: {
-          $ne: null,
-        },
-      },
+        IDEQ: { $ne: "" },
+        remunera: { $eq: "SI" },
+        alta: { $ne: null }
+      }
     },
     {
       $addFields: {
@@ -210,7 +197,6 @@ const DCF_filters = (fecha_inicio, fecha_fin) => {
       },
     }
   ])
-
 }
 
 module.exports = {

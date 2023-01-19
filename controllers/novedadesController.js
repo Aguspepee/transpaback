@@ -150,6 +150,78 @@ module.exports = {
         }
     },
 
+    getCantidades: async function (req, res, next) {
+        console.log("cants")
+        try {
+            const documents = await novedadesModel.aggregate([
+
+                filtroLineas(req.query.lineas),
+                //filtroCodigos(req.query.codigos),
+                {
+                    '$sort': {
+                        'fecha': -1
+                    }
+                },
+                mostrarHistorico(req.query.historico),
+                {
+                    '$lookup': {
+                        'from': 'piquetes',
+                        'localField': 'equipo',
+                        'foreignField': 'equipo',
+                        'as': 'piquete'
+                    }
+                },
+                {
+                    '$match': {
+                        '$expr': {
+                            '$ne': [
+                                '$codigo_valorac', ""
+                            ]
+                        }
+                    }
+                },
+                filtroZonas(req.query.zonas),
+                filtroReparadas(req.query.reparadas),
+                {
+                    '$sort': {
+                        'fecha': -1
+                    }
+                },
+                {
+                    '$match': {
+                        'codigo_valorac': {
+                            '$nin': [
+                                'PINT', 'PINS', 'PINM', 'SNOV'
+                            ]
+                        }
+                    }
+                },
+                {
+                    $group: {
+                        _id: "$codigo_valorac",
+                        reparadas: { $sum: { $cond: [{ $eq: ["$valor_medido", 1] }, 1, 0] } },
+                        abiertas: { $sum: { $cond: [{ $eq: ["$valor_medido", 0] }, 1, 0] } }
+                    }
+                },
+                {
+                    '$addFields': {
+                        total: { $sum: ["$reparadas", "$abiertas"] }
+                    }
+                },
+                {
+                    '$sort': {
+                        'abiertas': -1,
+                    }
+                },
+            ])
+            res.json(documents)
+        } catch (e) {
+            console.log(e)
+            e.status = 400
+            next(e)
+        }
+    },
+
     createAll: async function (req, res, next) {
 
         const novedades = req.body.map((novedad) => {

@@ -99,7 +99,7 @@ module.exports = {
                         'let': {
                             'equipo': '$equipo'
                         },
-                        'pipeline': [
+                        'pipeline': [ 
                             {
                                 '$match': {
                                     '$expr': {

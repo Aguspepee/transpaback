@@ -27,6 +27,22 @@ const filtroLineas = (lineas) => {
     )
 }
 
+const filtroReparadas = (reparadas) => {
+    console.log(reparadas)
+    return (
+        reparadas === 'false' ?
+            {
+                '$match': {
+                    "valor_medido": 0
+                }
+            } : {
+                '$match': {
+                    "valor_medido": 1
+                }
+            }
+    )
+}
+
 module.exports = {
     getAll: async function (req, res, next) {
         try {
@@ -158,9 +174,53 @@ module.exports = {
                                         ]
                                     }
                                 }
-                            }
+                            },
+                            {
+                                '$match': {
+                                    "valor_medido": 0
+                                }
+                            } 
                         ],
-                        'as': 'novedades'
+                        'as': 'novedades_abiertas'
+                    }
+                },
+                {
+                    '$lookup': {
+                        'from': 'novedades',
+                        'let': {
+                            'equipo': '$equipo'
+                        },
+                        'pipeline': [
+                            {
+                                '$match': {
+                                    '$expr': {
+                                        '$ne': [
+                                            '$codigo_valorac', ''
+                                        ]
+                                    }
+                                }
+                            },
+                            {
+                                '$match': {
+                                    '$expr': {
+                                        '$eq': [
+                                            '$equipo', '$$equipo'
+                                        ]
+                                    }
+                                }
+                            },
+                            {
+                                '$match': {
+                                    '$expr': {
+                                        '$in': [
+                                            '$codigo_valorac', req.query.codigos?.split(",")
+                                        ]
+                                    }
+                                }
+                            },
+                            //filtroReparadas(req.query.reparadas==='true' ? 'true')
+                        ],
+                        'as': 'novedades_reparadas'
                     }
                 }
             ])

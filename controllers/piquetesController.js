@@ -26,21 +26,42 @@ const filtroLineas = (lineas) => {
             } : { '$match': {} }
     )
 }
+const mostrarHistorico = (historico) => {
 
-const filtroReparadas = (reparadas) => {
-    console.log(reparadas)
     return (
-        reparadas === 'false' ?
+        historico === 'false' ?
             {
-                '$match': {
-                    "valor_medido": 0
+                '$group': {
+                    '_id': [
+                        '$equipo', '$codigo_valorac', '$denominacion'
+                    ],
+                    'fecha': {
+                        '$first': '$fecha'
+                    },
+                    'orden': {
+                        '$first': '$orden'
+                    },
+                    'equipo': {
+                        '$first': '$equipo'
+                    },
+                    'denominacion': {
+                        '$first': '$denominacion'
+                    },
+                    'codigo_valorac': {
+                        '$first': '$codigo_valorac'
+                    },
+                    'codif_txt_cod': {
+                        '$first': '$codif_txt_cod'
+                    },
+                    'valor_medido': {
+                        '$first': '$valor_medido'
+                    }
                 }
-            } : {
-                '$match': {
-                    "valor_medido": 1
-                }
-            }
+            } : { '$match': {} }
+
     )
+
+
 }
 
 module.exports = {
@@ -115,7 +136,7 @@ module.exports = {
                         'let': {
                             'equipo': '$equipo'
                         },
-                        'pipeline': [ 
+                        'pipeline': [
                             {
                                 '$match': {
                                     '$expr': {
@@ -135,7 +156,7 @@ module.exports = {
                                 }
                             },
                             {
-                                '$sort': {'fecha':-1}
+                                '$sort': { 'fecha': -1 }
                             }
                         ],
                         'as': 'novedades_list'
@@ -148,6 +169,7 @@ module.exports = {
                             'equipo': '$equipo'
                         },
                         'pipeline': [
+                           
                             {
                                 '$match': {
                                     '$expr': {
@@ -155,6 +177,14 @@ module.exports = {
                                             '$codigo_valorac', ''
                                         ]
                                     }
+                                }
+                            },
+                            {
+                                '$match': {
+                                    '$and': [
+                                        { 'fecha': { '$gte': new Date(req.query.fecha_inicio)  } },
+                                        { 'fecha': { '$lte': new Date(req.query.fecha_fin)  } }
+                                    ]
                                 }
                             },
                             {
@@ -176,10 +206,16 @@ module.exports = {
                                 }
                             },
                             {
+                                '$sort': {
+                                    'fecha': -1
+                                }
+                            },
+                            mostrarHistorico('false'),
+                            {
                                 '$match': {
                                     "valor_medido": 0
                                 }
-                            } 
+                            }
                         ],
                         'as': 'novedades_abiertas'
                     }
@@ -191,6 +227,7 @@ module.exports = {
                             'equipo': '$equipo'
                         },
                         'pipeline': [
+                            
                             {
                                 '$match': {
                                     '$expr': {
@@ -198,6 +235,14 @@ module.exports = {
                                             '$codigo_valorac', ''
                                         ]
                                     }
+                                }
+                            },
+                            {
+                                '$match': {
+                                    '$and': [
+                                        { 'fecha': { '$gte': new Date(req.query.fecha_inicio)  } },
+                                        { 'fecha': { '$lte': new Date(req.query.fecha_fin)  } }
+                                    ]
                                 }
                             },
                             {
@@ -218,7 +263,17 @@ module.exports = {
                                     }
                                 }
                             },
-                            //filtroReparadas(req.query.reparadas==='true' ? 'true')
+                            {
+                                '$sort': {
+                                    'fecha': -1
+                                }
+                            },
+                            mostrarHistorico('false'),
+                            {
+                                '$match': {
+                                    "valor_medido": 1
+                                }
+                            }
                         ],
                         'as': 'novedades_reparadas'
                     }

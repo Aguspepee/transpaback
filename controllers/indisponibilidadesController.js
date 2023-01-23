@@ -70,7 +70,6 @@ module.exports = {
     },
 
     createAll: async function (req, res, next) {
-        console.log(req.body)
         const indisponibilidades = req.body.map((indisponibilidad) => {
             let FENT = dateTimeToDate(indisponibilidad.ENTRADA)
             let FSAL = dateTimeToDate(indisponibilidad.SALIDA)
@@ -79,7 +78,6 @@ module.exports = {
         
         try {
             const document = await indisponibilidadesModel.create(indisponibilidades);
-            console.log("se creo", document);
             res.json(document);
         } catch (e) {
             console.log(e);

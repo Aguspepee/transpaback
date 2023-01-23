@@ -30,13 +30,9 @@ module.exports = {
     },
 
     createAll: async function (req, res, next) {
-        console.log(req.body)
         const lineas = req.body
-
-
         try {
             const document = await lineasModel.create(lineas);
-            console.log("se creo", document);
             res.json(document);
         } catch (e) {
             console.log(e);

@@ -28,10 +28,8 @@ module.exports = {
     },
 
     createAll: async function (req, res, next) {
-        console.log(req.body)
         try {
             const document = await equiposModel.create(req.body);
-            console.log("se creo", document);
             res.json(document);
         } catch (e) {
             console.log(e);

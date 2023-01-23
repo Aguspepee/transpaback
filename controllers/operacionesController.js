@@ -32,14 +32,12 @@ module.exports = {
         const operaciones = req.body.map((operacion) => {
             let FENT = new Date(operacion.FENT)
             FENT.setHours(operacion.HENT, operacion.MENT)
-            console.log(FENT)
 
             let FSAL = new Date(operacion.FSAL)
             FSAL.setHours(operacion.HSAL, operacion.MSAL)
 
             let FINF = new Date(operacion.FINF)
             FINF.setHours(operacion.HINF, operacion.MINF)
-            console.log({ ...operacion, FENT: FENT, FSAL: FSAL, FINF: FINF })
 
             return ({ ...operacion, FENT: FENT, FSAL: FSAL, FINF: FINF })
         })

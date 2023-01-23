@@ -15,7 +15,6 @@ const filtroZonas = (zonas) => {
 }
 
 const filtroLineas = (lineas) => {
-    console.log(lineas)
     return (
         !(lineas === undefined || lineas.length == 0) ?
             {
@@ -29,7 +28,6 @@ const filtroLineas = (lineas) => {
 }
 
 const filtroReparadas = (reparadas) => {
-    console.log(reparadas)
     return (
         reparadas === 'false' ?
             {
@@ -41,7 +39,6 @@ const filtroReparadas = (reparadas) => {
 }
 
 const filtroCodigos = (codigos) => {
-    console.log(codigos)
     return (
         {
             '$match': {
@@ -151,7 +148,6 @@ module.exports = {
     },
 
     getCantidades: async function (req, res, next) {
-        console.log("cants")
         try {
             const documents = await novedadesModel.aggregate([
 
@@ -208,11 +204,18 @@ module.exports = {
                         total: { $sum: ["$reparadas", "$abiertas"] }
                     }
                 },
+                req.query.reparadas?
+                {
+                    '$sort': {
+                        'total': -1,
+                    }
+                }:
                 {
                     '$sort': {
                         'abiertas': -1,
                     }
-                },
+                }
+                ,
             ])
             res.json(documents)
         } catch (e) {
@@ -231,7 +234,6 @@ module.exports = {
         })
         try {
             const document = await novedadesModel.create(novedades);
-            console.log(document)
             res.json(document);
         } catch (e) {
             console.log(e);

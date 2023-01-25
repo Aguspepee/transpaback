@@ -27,7 +27,6 @@ const filtroLineas = (lineas) => {
     )
 }
 const mostrarHistorico = (historico) => {
-
     return (
         historico === 'false' ?
             {
@@ -58,10 +57,7 @@ const mostrarHistorico = (historico) => {
                     }
                 }
             } : { '$match': {} }
-
     )
-
-
 }
 
 module.exports = {
@@ -125,6 +121,7 @@ module.exports = {
             next(e)
         }
     },
+
     getNovedades: async function (req, res, next) {
         try {
             const documents = await piquetesModel.aggregate([
@@ -277,7 +274,71 @@ module.exports = {
                         ],
                         'as': 'novedades_reparadas'
                     }
-                }
+                },
+                {
+                    '$lookup': {
+                        'from': 'novedades',
+                        'let': {
+                            'equipo': '$equipo'
+                        },
+                        'pipeline': [
+                            
+                            {
+                                '$match': {
+                                    '$expr': {
+                                        '$ne': [
+                                            '$codigo_valorac', ''
+                                        ]
+                                    }
+                                }
+                            },
+                            {
+                                '$match': {
+                                    '$and': [
+                                        { 'fecha': { '$gte': new Date(req.query.fecha_inicio)  } },
+                                        { 'fecha': { '$lte': new Date(req.query.fecha_fin)  } }
+                                    ]
+                                }
+                            },
+                            {
+                                '$match': {
+                                    '$expr': {
+                                        '$eq': [
+                                            '$equipo', '$$equipo'
+                                        ]
+                                    }
+                                }
+                            },
+                            {
+                                '$match': {
+                                    '$expr': {
+                                        '$in': [
+                                            '$codigo_valorac',  [req.query.inspecciones]
+                                        ]
+                                    }
+                                }
+                            },
+                            {
+                                '$sort': {
+                                    'fecha': -1
+                                }
+                            },
+                            mostrarHistorico('true'),
+                            {
+                                '$match': {
+                                    "valor_medido": 1
+                                }
+                            }
+                        ],
+                        'as': 'inspecciones'
+                    }
+                },
+                {
+                    $addFields: {
+                       inspecciones: { $cond: { if: { $isArray: "$inspecciones" }, then: { $size: "$inspecciones" }, else: 0} },
+                    }
+                 },
+                
             ])
             res.json(documents)
         } catch (e) {
@@ -286,4 +347,97 @@ module.exports = {
             next(e)
         }
     },
+
+    getCantidadInspecciones: async function (req, res, next) {
+        try {
+            const documents = await piquetesModel.aggregate([
+                filtroZonas(req.query.zonas),
+                filtroLineas(req.query.lineas),
+                {
+                    '$lookup': {
+                        'from': 'novedades',
+                        'let': {
+                            'equipo': '$equipo'
+                        },
+                        'pipeline': [
+                            
+                            {
+                                '$match': {
+                                    '$expr': {
+                                        '$ne': [
+                                            '$codigo_valorac', ''
+                                        ]
+                                    }
+                                }
+                            },
+                            {
+                                '$match': {
+                                    '$and': [
+                                        { 'fecha': { '$gte': new Date(req.query.fecha_inicio)  } },
+                                        { 'fecha': { '$lte': new Date(req.query.fecha_fin)  } }
+                                    ]
+                                }
+                            },
+                            {
+                                '$match': {
+                                    '$expr': {
+                                        '$eq': [
+                                            '$equipo', '$$equipo'
+                                        ]
+                                    }
+                                }
+                            },
+                            {
+                                '$match': {
+                                    '$expr': {
+                                        '$in': [
+                                            '$codigo_valorac',  [req.query.inspecciones]
+                                        ]
+                                    }
+                                }
+                            },
+                            {
+                                '$sort': {
+                                    'fecha': -1
+                                }
+                            },
+                            mostrarHistorico('true'),
+                            {
+                                '$match': {
+                                    "valor_medido": 1
+                                }
+                            }
+                        ],
+                        'as': 'inspecciones'
+                    }
+                },
+                {
+                    $addFields: {
+                       inspecciones: { $cond: { if: { $isArray: "$inspecciones" }, then: { $size: "$inspecciones" }, else: 0} },
+                    }
+                 },
+                 {
+                    $group: {
+                        _id: "$inspecciones",
+                        cantidad: {
+                          $sum: 1
+                        }
+                      }
+                 },
+                 {
+                    $sort:{
+                        _id:-1
+                    }
+                 }
+
+            ])
+            res.json(documents)
+        } catch (e) {
+            console.log(e)
+            e.status = 400
+            next(e)
+        }
+    },
+
+    
 }

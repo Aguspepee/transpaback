@@ -8,5 +8,6 @@ router.get('/', piquetesController.getAll);
 router.get('/zonas', piquetesController.getZonas);
 router.get('/lineas', piquetesController.getLineas);
 router.get('/lineas-novedades', piquetesController.getNovedades);
+router.get('/cantidad-inspecciones', piquetesController.getCantidadInspecciones);
 
 module.exports = router;

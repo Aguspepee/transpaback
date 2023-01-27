@@ -7,6 +7,7 @@ const piquetesController = require("../controllers/piquetesController.js")
 router.get('/', piquetesController.getAll);
 router.get('/zonas', piquetesController.getZonas);
 router.get('/lineas', piquetesController.getLineas);
+router.get('/piquetes-por-linea', piquetesController.getPiquetesPorLinea);
 router.get('/lineas-novedades', piquetesController.getNovedades);
 router.get('/cantidad-inspecciones', piquetesController.getCantidadInspecciones);
 

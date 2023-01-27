@@ -97,6 +97,7 @@ module.exports = {
             next(e)
         }
     },
+
     getLineas: async function (req, res, next) {
         try {
             const documents = await piquetesModel.aggregate([
@@ -112,6 +113,37 @@ module.exports = {
                     '$unset': '_id'
                 }, {
                     '$sort': { 'value': 1 }
+                }
+            ])
+            res.json(documents)
+        } catch (e) {
+            console.log(e)
+            e.status = 400
+            next(e)
+        }
+    },
+
+    getPiquetesPorLinea: async function (req, res, next) {
+        
+        try {
+            const documents = await piquetesModel.aggregate([
+                {
+                    '$match': {
+                        'latitud': {
+                            '$ne': null
+                        }
+                    }
+                },
+                { $sort: { equipo: 1 } },
+                {
+                    '$group': {
+                        '_id': ['$linea', '$area'],
+                        'linea': { '$first': '$linea' },
+                        'zona': { '$first': '$area' },
+                        'piquetes': {
+                            '$push': '$$ROOT'
+                        }
+                    }
                 }
             ])
             res.json(documents)
@@ -166,7 +198,7 @@ module.exports = {
                             'equipo': '$equipo'
                         },
                         'pipeline': [
-                           
+
                             {
                                 '$match': {
                                     '$expr': {
@@ -179,8 +211,8 @@ module.exports = {
                             {
                                 '$match': {
                                     '$and': [
-                                        { 'fecha': { '$gte': new Date(req.query.fecha_inicio)  } },
-                                        { 'fecha': { '$lte': new Date(req.query.fecha_fin)  } }
+                                        { 'fecha': { '$gte': new Date(req.query.fecha_inicio) } },
+                                        { 'fecha': { '$lte': new Date(req.query.fecha_fin) } }
                                     ]
                                 }
                             },
@@ -224,7 +256,7 @@ module.exports = {
                             'equipo': '$equipo'
                         },
                         'pipeline': [
-                            
+
                             {
                                 '$match': {
                                     '$expr': {
@@ -237,8 +269,8 @@ module.exports = {
                             {
                                 '$match': {
                                     '$and': [
-                                        { 'fecha': { '$gte': new Date(req.query.fecha_inicio)  } },
-                                        { 'fecha': { '$lte': new Date(req.query.fecha_fin)  } }
+                                        { 'fecha': { '$gte': new Date(req.query.fecha_inicio) } },
+                                        { 'fecha': { '$lte': new Date(req.query.fecha_fin) } }
                                     ]
                                 }
                             },
@@ -282,7 +314,7 @@ module.exports = {
                             'equipo': '$equipo'
                         },
                         'pipeline': [
-                            
+
                             {
                                 '$match': {
                                     '$expr': {
@@ -295,8 +327,8 @@ module.exports = {
                             {
                                 '$match': {
                                     '$and': [
-                                        { 'fecha': { '$gte': new Date(req.query.fecha_inicio)  } },
-                                        { 'fecha': { '$lte': new Date(req.query.fecha_fin)  } }
+                                        { 'fecha': { '$gte': new Date(req.query.fecha_inicio) } },
+                                        { 'fecha': { '$lte': new Date(req.query.fecha_fin) } }
                                     ]
                                 }
                             },
@@ -313,7 +345,7 @@ module.exports = {
                                 '$match': {
                                     '$expr': {
                                         '$in': [
-                                            '$codigo_valorac',  [req.query.inspecciones]
+                                            '$codigo_valorac', [req.query.inspecciones]
                                         ]
                                     }
                                 }
@@ -335,10 +367,10 @@ module.exports = {
                 },
                 {
                     $addFields: {
-                       inspecciones: { $cond: { if: { $isArray: "$inspecciones" }, then: { $size: "$inspecciones" }, else: 0} },
+                        inspecciones: { $cond: { if: { $isArray: "$inspecciones" }, then: { $size: "$inspecciones" }, else: 0 } },
                     }
-                 },
-                
+                },
+
             ])
             res.json(documents)
         } catch (e) {
@@ -360,7 +392,7 @@ module.exports = {
                             'equipo': '$equipo'
                         },
                         'pipeline': [
-                            
+
                             {
                                 '$match': {
                                     '$expr': {
@@ -373,8 +405,8 @@ module.exports = {
                             {
                                 '$match': {
                                     '$and': [
-                                        { 'fecha': { '$gte': new Date(req.query.fecha_inicio)  } },
-                                        { 'fecha': { '$lte': new Date(req.query.fecha_fin)  } }
+                                        { 'fecha': { '$gte': new Date(req.query.fecha_inicio) } },
+                                        { 'fecha': { '$lte': new Date(req.query.fecha_fin) } }
                                     ]
                                 }
                             },
@@ -391,7 +423,7 @@ module.exports = {
                                 '$match': {
                                     '$expr': {
                                         '$in': [
-                                            '$codigo_valorac',  [req.query.inspecciones]
+                                            '$codigo_valorac', [req.query.inspecciones]
                                         ]
                                     }
                                 }
@@ -413,22 +445,22 @@ module.exports = {
                 },
                 {
                     $addFields: {
-                       inspecciones: { $cond: { if: { $isArray: "$inspecciones" }, then: { $size: "$inspecciones" }, else: 0} },
+                        inspecciones: { $cond: { if: { $isArray: "$inspecciones" }, then: { $size: "$inspecciones" }, else: 0 } },
                     }
-                 },
-                 {
+                },
+                {
                     $group: {
                         _id: "$inspecciones",
                         cantidad: {
-                          $sum: 1
+                            $sum: 1
                         }
-                      }
-                 },
-                 {
-                    $sort:{
-                        _id:-1
                     }
-                 }
+                },
+                {
+                    $sort: {
+                        _id: -1
+                    }
+                }
 
             ])
             res.json(documents)
@@ -439,5 +471,5 @@ module.exports = {
         }
     },
 
-    
+
 }

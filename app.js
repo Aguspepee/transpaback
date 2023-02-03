@@ -21,6 +21,7 @@ const reportesRouter = require('./routes/reportesRouter');
 const puntosRouter = require('./routes/puntosRouter');
 const equiposRouter = require('./routes/equiposRouter');
 const maquinasRouter = require('./routes/equipos/maquinasRouter');
+const sapsRouter = require('./routes/sapsRouter');
 
 var app = express();
 
@@ -61,6 +62,7 @@ app.use('/indisponibilidades/', indisponibilidadesRouter);
 app.use('/lineas/', lineasRouter);
 app.use('/reportes/', reportesRouter);
 app.use('/puntos/', puntosRouter);
+app.use('/saps', sapsRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

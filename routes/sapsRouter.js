@@ -19,7 +19,7 @@ router.get('/filterGeneral/:Month-:Year-:Cl_actividad_PM-:Clase_de_orden-:Grupo_
 router.get('/DistibucionHoraria/:Month-:Year-:Grupo_planif',sapsController.distribucionHoraria)
 
 //Resumen anual por mes
-router.get('/resumenAnual/:Year-:Cl_actividad_PM-:Clase_de_orden-:Grupo_planif-:Texto_breve-:Pto_tbjo_resp-:Operacion-:BorrarDuplicados',sapsController.resumenAnual)
+router.get('/resumenAnual',sapsController.resumenAnual)
 
 
 module.exports = router;

@@ -24,6 +24,15 @@ const sapsSchema = mongoose.Schema({
   Inicio_program: {
     type: String,
     required: [true, errorMessage.GENERAL.campo_obligatorio],
+  }, 
+  Inicio_program_date: {
+    type: Date,
+    default: function() {
+      const date = new Date();
+      const [day, month, year] = this.Inicio_program.split('/');
+      date.setFullYear(parseInt(year, 10) + 2000, parseInt(month, 10) - 1, parseInt(day, 10));
+      return date;
+    }
   },
   Fecha_ref: {
     type: String,

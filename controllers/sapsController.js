@@ -13,6 +13,82 @@ module.exports = {
     }
   },
 
+  getRPM: async function (req, res, next) {
+    try {
+      let documents = await sapsModel.aggregate([
+        {
+          $group: {
+            _id: "$Orden",
+            firstDoc: { $first: "$$ROOT" }
+          }
+        },
+        { $replaceRoot: { newRoot: "$firstDoc" } },
+        {
+          $match: {
+            "Grupo_planif": "ZN1",
+            "Cl_actividad_PM":"RPM",
+            "Inicio_program_date": {
+              $gte: new Date("2023-01-01T00:00:00Z"),
+              $lt: new Date("2024-01-01T00:00:00Z")
+            }
+          }
+        },
+        {
+          $addFields: {
+            start: {
+              $dateFromString: {
+                dateString: {
+                  $concat: [
+                    { $substr: ["$Inicio_program_date", 0, 10] },
+                    "T00:00:00.000Z"
+                  ]
+                }
+              }
+            },
+            end: {
+              $add: [
+                {
+                  $dateFromString: {
+                    dateString: {
+                      $concat: [
+                        { $substr: ["$Inicio_program_date", 0, 10] },
+                        "T00:00:00.000Z"
+                      ]
+                    }
+                  }
+                },
+                { $multiply: [7, 24, 60, 60, 1000] } // add one week in milliseconds
+              ]
+            }
+          }
+        },
+        {
+          $project: {
+            _id: 0,
+            start: 1,
+            end: 1,
+            name: "$Ubicac_tecnica",
+            id: "$Orden",
+            type: "task",
+            progress: 100
+          }
+        },
+        {
+          $sort: {
+            start:1
+          }
+        }
+      ]);
+
+      res.json(documents);
+      console.log("Documentos", documents);
+    } catch (e) {
+      console.log(e);
+      e.status = 400;
+      next(e);
+    }
+  },
+
   createAll: async function (req, res, next) {
     try {
       const sap = new sapsModel({
@@ -467,22 +543,22 @@ module.exports = {
           }
         }, {
           '$project': {
-            'Grupo_planif': 1, 
-            'Orden': 1, 
-            'Texto_breve': 1, 
-            'Inicio_program': 1, 
-            'Fecha_ref': 1, 
-            'Clase_de_orden': 1, 
-            'Cl_actividad_PM': 1, 
-            'Status_usuario': 1, 
-            'Pto_tbjo_resp': 1, 
-            'Trabajo_real': 1, 
-            'Operacion': 1, 
-            'Fecha_ref_Mes': 1, 
-            'Fecha_ref_Año': 1, 
-            'Inicio_program_Mes': 1, 
-            'Inicio_program_Año': 1, 
-            'Grupo_Agrupamiento': 1, 
+            'Grupo_planif': 1,
+            'Orden': 1,
+            'Texto_breve': 1,
+            'Inicio_program': 1,
+            'Fecha_ref': 1,
+            'Clase_de_orden': 1,
+            'Cl_actividad_PM': 1,
+            'Status_usuario': 1,
+            'Pto_tbjo_resp': 1,
+            'Trabajo_real': 1,
+            'Operacion': 1,
+            'Fecha_ref_Mes': 1,
+            'Fecha_ref_Año': 1,
+            'Inicio_program_Mes': 1,
+            'Inicio_program_Año': 1,
+            'Grupo_Agrupamiento': 1,
             'ZN': {
               '$cond': [
                 {
@@ -493,7 +569,7 @@ module.exports = {
                   ]
                 }, 1, 0
               ]
-            }, 
+            },
             'ZS': {
               '$cond': [
                 {
@@ -504,7 +580,7 @@ module.exports = {
                   ]
                 }, 1, 0
               ]
-            }, 
+            },
             'ZO': {
               '$cond': [
                 {
@@ -515,7 +591,7 @@ module.exports = {
                   ]
                 }, 1, 0
               ]
-            }, 
+            },
             'ZA': {
               '$cond': [
                 {
@@ -530,16 +606,16 @@ module.exports = {
           }
         }, {
           '$group': {
-            '_id': '$Inicio_program_Mes', 
+            '_id': '$Inicio_program_Mes',
             'ZN': {
               '$sum': '$ZN'
-            }, 
+            },
             'ZS': {
               '$sum': '$ZS'
-            }, 
+            },
             'ZO': {
               '$sum': '$ZO'
-            }, 
+            },
             'ZA': {
               '$sum': '$ZA'
             }
@@ -583,22 +659,22 @@ module.exports = {
           }
         }, {
           '$project': {
-            'Grupo_planif': 1, 
-            'Orden': 1, 
-            'Texto_breve': 1, 
-            'Inicio_program': 1, 
-            'Fecha_ref': 1, 
-            'Clase_de_orden': 1, 
-            'Cl_actividad_PM': 1, 
-            'Status_usuario': 1, 
-            'Pto_tbjo_resp': 1, 
-            'Trabajo_real': 1, 
-            'Operacion': 1, 
-            'Fecha_ref_Mes': 1, 
-            'Fecha_ref_Año': 1, 
-            'Inicio_program_Mes': 1, 
-            'Inicio_program_Año': 1, 
-            'Grupo_Agrupamiento': 1, 
+            'Grupo_planif': 1,
+            'Orden': 1,
+            'Texto_breve': 1,
+            'Inicio_program': 1,
+            'Fecha_ref': 1,
+            'Clase_de_orden': 1,
+            'Cl_actividad_PM': 1,
+            'Status_usuario': 1,
+            'Pto_tbjo_resp': 1,
+            'Trabajo_real': 1,
+            'Operacion': 1,
+            'Fecha_ref_Mes': 1,
+            'Fecha_ref_Año': 1,
+            'Inicio_program_Mes': 1,
+            'Inicio_program_Año': 1,
+            'Grupo_Agrupamiento': 1,
             'ZN': {
               '$cond': [
                 {
@@ -609,7 +685,7 @@ module.exports = {
                   ]
                 }, 1, 0
               ]
-            }, 
+            },
             'ZS': {
               '$cond': [
                 {
@@ -620,7 +696,7 @@ module.exports = {
                   ]
                 }, 1, 0
               ]
-            }, 
+            },
             'ZO': {
               '$cond': [
                 {
@@ -631,7 +707,7 @@ module.exports = {
                   ]
                 }, 1, 0
               ]
-            }, 
+            },
             'ZA': {
               '$cond': [
                 {
@@ -646,16 +722,16 @@ module.exports = {
           }
         }, {
           '$group': {
-            '_id': '$Inicio_program_Mes', 
+            '_id': '$Inicio_program_Mes',
             'ZN': {
               '$sum': '$ZN'
-            }, 
+            },
             'ZS': {
               '$sum': '$ZS'
-            }, 
+            },
             'ZO': {
               '$sum': '$ZO'
-            }, 
+            },
             'ZA': {
               '$sum': '$ZA'
             }
@@ -711,22 +787,22 @@ module.exports = {
           }
         }, {
           '$project': {
-            'Grupo_planif': 1, 
-            'Orden': 1, 
-            'Texto_breve': 1, 
-            'Inicio_program': 1, 
-            'Fecha_ref': 1, 
-            'Clase_de_orden': 1, 
-            'Cl_actividad_PM': 1, 
-            'Status_usuario': 1, 
-            'Pto_tbjo_resp': 1, 
-            'Trabajo_real': 1, 
-            'Operacion': 1, 
-            'Fecha_ref_Mes': 1, 
-            'Fecha_ref_Año': 1, 
-            'Inicio_program_Mes': 1, 
-            'Inicio_program_Año': 1, 
-            'Grupo_Agrupamiento': 1, 
+            'Grupo_planif': 1,
+            'Orden': 1,
+            'Texto_breve': 1,
+            'Inicio_program': 1,
+            'Fecha_ref': 1,
+            'Clase_de_orden': 1,
+            'Cl_actividad_PM': 1,
+            'Status_usuario': 1,
+            'Pto_tbjo_resp': 1,
+            'Trabajo_real': 1,
+            'Operacion': 1,
+            'Fecha_ref_Mes': 1,
+            'Fecha_ref_Año': 1,
+            'Inicio_program_Mes': 1,
+            'Inicio_program_Año': 1,
+            'Grupo_Agrupamiento': 1,
             'ZN': {
               '$cond': [
                 {
@@ -737,7 +813,7 @@ module.exports = {
                   ]
                 }, 1, 0
               ]
-            }, 
+            },
             'ZS': {
               '$cond': [
                 {
@@ -748,7 +824,7 @@ module.exports = {
                   ]
                 }, 1, 0
               ]
-            }, 
+            },
             'ZO': {
               '$cond': [
                 {
@@ -759,7 +835,7 @@ module.exports = {
                   ]
                 }, 1, 0
               ]
-            }, 
+            },
             'ZA': {
               '$cond': [
                 {
@@ -774,16 +850,16 @@ module.exports = {
           }
         }, {
           '$group': {
-            '_id': '$Inicio_program_Mes', 
+            '_id': '$Inicio_program_Mes',
             'ZN': {
               '$sum': '$ZN'
-            }, 
+            },
             'ZS': {
               '$sum': '$ZS'
-            }, 
+            },
             'ZO': {
               '$sum': '$ZO'
-            }, 
+            },
             'ZA': {
               '$sum': '$ZA'
             }
@@ -845,22 +921,22 @@ module.exports = {
           }
         }, {
           '$project': {
-            'Grupo_planif': 1, 
-            'Orden': 1, 
-            'Texto_breve': 1, 
-            'Inicio_program': 1, 
-            'Fecha_ref': 1, 
-            'Clase_de_orden': 1, 
-            'Cl_actividad_PM': 1, 
-            'Status_usuario': 1, 
-            'Pto_tbjo_resp': 1, 
-            'Trabajo_real': 1, 
-            'Operacion': 1, 
-            'Fecha_ref_Mes': 1, 
-            'Fecha_ref_Año': 1, 
-            'Inicio_program_Mes': 1, 
-            'Inicio_program_Año': 1, 
-            'Grupo_Agrupamiento': 1, 
+            'Grupo_planif': 1,
+            'Orden': 1,
+            'Texto_breve': 1,
+            'Inicio_program': 1,
+            'Fecha_ref': 1,
+            'Clase_de_orden': 1,
+            'Cl_actividad_PM': 1,
+            'Status_usuario': 1,
+            'Pto_tbjo_resp': 1,
+            'Trabajo_real': 1,
+            'Operacion': 1,
+            'Fecha_ref_Mes': 1,
+            'Fecha_ref_Año': 1,
+            'Inicio_program_Mes': 1,
+            'Inicio_program_Año': 1,
+            'Grupo_Agrupamiento': 1,
             'ZN': {
               '$cond': [
                 {
@@ -871,7 +947,7 @@ module.exports = {
                   ]
                 }, 1, 0
               ]
-            }, 
+            },
             'ZS': {
               '$cond': [
                 {
@@ -882,7 +958,7 @@ module.exports = {
                   ]
                 }, 1, 0
               ]
-            }, 
+            },
             'ZO': {
               '$cond': [
                 {
@@ -893,7 +969,7 @@ module.exports = {
                   ]
                 }, 1, 0
               ]
-            }, 
+            },
             'ZA': {
               '$cond': [
                 {
@@ -908,16 +984,16 @@ module.exports = {
           }
         }, {
           '$group': {
-            '_id': '$Fecha_ref_Mes', 
+            '_id': '$Fecha_ref_Mes',
             'ZN': {
               '$sum': '$ZN'
-            }, 
+            },
             'ZS': {
               '$sum': '$ZS'
-            }, 
+            },
             'ZO': {
               '$sum': '$ZO'
-            }, 
+            },
             'ZA': {
               '$sum': '$ZA'
             }
@@ -951,22 +1027,22 @@ module.exports = {
           }
         }, {
           '$project': {
-            'Grupo_planif': 1, 
-            'Orden': 1, 
-            'Texto_breve': 1, 
-            'Inicio_program': 1, 
-            'Fecha_ref': 1, 
-            'Clase_de_orden': 1, 
-            'Cl_actividad_PM': 1, 
-            'Status_usuario': 1, 
-            'Pto_tbjo_resp': 1, 
-            'Trabajo_real': 1, 
-            'Operacion': 1, 
-            'Fecha_ref_Mes': 1, 
-            'Fecha_ref_Año': 1, 
-            'Inicio_program_Mes': 1, 
-            'Inicio_program_Año': 1, 
-            'Grupo_Agrupamiento': 1, 
+            'Grupo_planif': 1,
+            'Orden': 1,
+            'Texto_breve': 1,
+            'Inicio_program': 1,
+            'Fecha_ref': 1,
+            'Clase_de_orden': 1,
+            'Cl_actividad_PM': 1,
+            'Status_usuario': 1,
+            'Pto_tbjo_resp': 1,
+            'Trabajo_real': 1,
+            'Operacion': 1,
+            'Fecha_ref_Mes': 1,
+            'Fecha_ref_Año': 1,
+            'Inicio_program_Mes': 1,
+            'Inicio_program_Año': 1,
+            'Grupo_Agrupamiento': 1,
             'ZN': {
               '$cond': [
                 {
@@ -977,7 +1053,7 @@ module.exports = {
                   ]
                 }, 1, 0
               ]
-            }, 
+            },
             'ZS': {
               '$cond': [
                 {
@@ -988,7 +1064,7 @@ module.exports = {
                   ]
                 }, 1, 0
               ]
-            }, 
+            },
             'ZO': {
               '$cond': [
                 {
@@ -999,7 +1075,7 @@ module.exports = {
                   ]
                 }, 1, 0
               ]
-            }, 
+            },
             'ZA': {
               '$cond': [
                 {
@@ -1014,16 +1090,16 @@ module.exports = {
           }
         }, {
           '$group': {
-            '_id': '$Inicio_program_Mes', 
+            '_id': '$Inicio_program_Mes',
             'ZN': {
               '$sum': '$ZN'
-            }, 
+            },
             'ZS': {
               '$sum': '$ZS'
-            }, 
+            },
             'ZO': {
               '$sum': '$ZO'
-            }, 
+            },
             'ZA': {
               '$sum': '$ZA'
             }
@@ -1063,22 +1139,22 @@ module.exports = {
           }
         }, {
           '$project': {
-            'Grupo_planif': 1, 
-            'Orden': 1, 
-            'Texto_breve': 1, 
-            'Inicio_program': 1, 
-            'Fecha_ref': 1, 
-            'Clase_de_orden': 1, 
-            'Cl_actividad_PM': 1, 
-            'Status_usuario': 1, 
-            'Pto_tbjo_resp': 1, 
-            'Trabajo_real': 1, 
-            'Operacion': 1, 
-            'Fecha_ref_Mes': 1, 
-            'Fecha_ref_Año': 1, 
-            'Inicio_program_Mes': 1, 
-            'Inicio_program_Año': 1, 
-            'Grupo_Agrupamiento': 1, 
+            'Grupo_planif': 1,
+            'Orden': 1,
+            'Texto_breve': 1,
+            'Inicio_program': 1,
+            'Fecha_ref': 1,
+            'Clase_de_orden': 1,
+            'Cl_actividad_PM': 1,
+            'Status_usuario': 1,
+            'Pto_tbjo_resp': 1,
+            'Trabajo_real': 1,
+            'Operacion': 1,
+            'Fecha_ref_Mes': 1,
+            'Fecha_ref_Año': 1,
+            'Inicio_program_Mes': 1,
+            'Inicio_program_Año': 1,
+            'Grupo_Agrupamiento': 1,
             'ZN': {
               '$cond': [
                 {
@@ -1089,7 +1165,7 @@ module.exports = {
                   ]
                 }, 1, 0
               ]
-            }, 
+            },
             'ZS': {
               '$cond': [
                 {
@@ -1100,7 +1176,7 @@ module.exports = {
                   ]
                 }, 1, 0
               ]
-            }, 
+            },
             'ZO': {
               '$cond': [
                 {
@@ -1111,7 +1187,7 @@ module.exports = {
                   ]
                 }, 1, 0
               ]
-            }, 
+            },
             'ZA': {
               '$cond': [
                 {
@@ -1126,16 +1202,16 @@ module.exports = {
           }
         }, {
           '$group': {
-            '_id': '$Fecha_ref_Mes', 
+            '_id': '$Fecha_ref_Mes',
             'ZN': {
               '$sum': '$ZN'
-            }, 
+            },
             'ZS': {
               '$sum': '$ZS'
-            }, 
+            },
             'ZO': {
               '$sum': '$ZO'
-            }, 
+            },
             'ZA': {
               '$sum': '$ZA'
             }
@@ -1146,7 +1222,7 @@ module.exports = {
           }
         }
       ]
-    );
+      );
 
       //RESPUESTA
       res.json({
@@ -1163,4 +1239,6 @@ module.exports = {
       next(e);
     }
   },
+
+
 };

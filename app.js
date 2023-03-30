@@ -5,7 +5,7 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-var cors = require('cors');
+
 var bodyParser = require('body-parser');
 
 var AuthToken = require("./middlewares/authToken");
@@ -22,14 +22,29 @@ const puntosRouter = require('./routes/puntosRouter');
 const equiposRouter = require('./routes/equiposRouter');
 const maquinasRouter = require('./routes/equipos/maquinasRouter');
 const sapsRouter = require('./routes/sapsRouter');
+var cors = require('cors');
+
 
 var app = express();
 
 //Token key generator
 app.set("secretKey", "gie2022")
 
-//CORS
-app.use(cors())
+console.log(process.env.FRONTEND_URL)
+
+/* //CORS
+app.use(cors()) */
+const corsOptions = {
+  origin: [`${process.env.FRONTEND_URL}`],
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true,
+  // add the following line to allow socket.io connections
+  transports: ['websocket', 'polling'],
+};
+
+app.use(cors(corsOptions));
+
 
 
 app.use(bodyParser.json({limit: '50mb'}));

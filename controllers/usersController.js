@@ -24,7 +24,6 @@ module.exports = {
                 {
                     $addFields: {
                         nombre_completo: { $concat: ["$nombre", " ", "$apellido"] }
-
                     }
                 },
                 {

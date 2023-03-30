@@ -26,7 +26,7 @@ module.exports = {
         {
           $match: {
             "Grupo_planif": "ZN1",
-            "Cl_actividad_PM":"RPM",
+            "Cl_actividad_PM": "RPM",
             "Inicio_program_date": {
               $gte: new Date("2023-01-01T00:00:00Z"),
               $lt: new Date("2024-01-01T00:00:00Z")
@@ -75,7 +75,7 @@ module.exports = {
         },
         {
           $sort: {
-            start:1
+            start: 1
           }
         }
       ]);
@@ -894,7 +894,8 @@ module.exports = {
         }, {
           '$match': {
             'Status_usuario': {
-              '$regex': 'CTEC'
+                   //'$regex': 'CTEC'
+              '$eq': 'CTEC'
             }
           }
         }, {

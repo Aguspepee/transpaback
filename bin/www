@@ -1,38 +1,24 @@
-#!/usr/bin/env node
-
-/**
- * Module dependencies.
- */
-
+//Module dependencies.
 var app = require('../app');
 var debug = require('debug')('gieback:server');
 var http = require('http');
 
-/**
- * Get port from environment and store in Express.
- */
-
+//Get port from environment and store in Express.
 var port = normalizePort(process.env.PORT || '9001');
 app.set('port', port);
 
-/**
- * Create HTTP server.
- */
-
+//Create HTTP server.
 var server = http.createServer(app);
 
-/**
- * Listen on provided port, on all network interfaces.
- */
+//Creating Socket.io instance
+const io = require('./socket')(server);
 
+//Listen on provided port, on all network interfaces.
 server.listen(port);
 server.on('error', onError);
 server.on('listening', onListening);
 
-/**
- * Normalize a port into a number, string, or false.
- */
-
+//Normalize a port into a number, string, or false.
 function normalizePort(val) {
   var port = parseInt(val, 10);
 
@@ -49,10 +35,7 @@ function normalizePort(val) {
   return false;
 }
 
-/**
- * Event listener for HTTP server "error" event.
- */
-
+//Event listener for HTTP server "error" event.
 function onError(error) {
   if (error.syscall !== 'listen') {
     throw error;
@@ -77,10 +60,8 @@ function onError(error) {
   }
 }
 
-/**
- * Event listener for HTTP server "listening" event.
- */
 
+//Event listener for HTTP server "listening" event.
 function onListening() {
   console.log(`Listening on port ${port}`)
   var addr = server.address();
@@ -89,3 +70,6 @@ function onListening() {
     : 'port ' + addr.port;
   debug('Listening on ' + bind);
 }
+
+// Export the io instance to use it in other files
+module.exports = io

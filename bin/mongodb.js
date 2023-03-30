@@ -1,14 +1,7 @@
-const express = require("express");
 const mongoose = require("mongoose");
 
-const app = express();
-
-app.use(express.json());
-console.log(process.env.MONGODB_URI)
 mongoose.connect(
-  //"mongodb://0.0.0.0:27017/transpa",
-  //process.env.MONGODB_URI,
-  
+  process.env.MONGODB_URI,  
   {
     useNewUrlParser: true,
   }, function (error){

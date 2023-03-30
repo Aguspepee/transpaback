@@ -102,7 +102,6 @@ module.exports = {
     },
 
     getWithMeta: async function (req, res, next) {
-
         try {
             const documents = await novedadesModel.aggregate([
 
@@ -226,7 +225,6 @@ module.exports = {
     },
 
     createAll: async function (req, res, next) {
-
         const novedades = req.body.map((novedad) => {
             var fecha_str = novedad.fecha.split("/");
             var fecha = new Date(+fecha_str[2], fecha_str[1] - 1, +fecha_str[0]);
